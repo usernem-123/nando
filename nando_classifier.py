@@ -1,12 +1,14 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score
+import warnings
+
+warnings.filterwarnings("ignore", category=UserWarning)
 
 # Load first, then fill missing
-df = pd.read_csv("iris.csv")
+df = pd.read_csv("datasets/iris.csv")
 df = df.fillna(df.mean(numeric_only=True))
 
 # Features & Labels
@@ -21,10 +23,11 @@ model = SVC(kernel="linear").fit(X_train, y_train)
 # Accuracy
 print(f"Accuracy: {accuracy_score(y_test, model.predict(X_test))*100:.2f}%")
 
-# Visualization
-for cls in set(y):
-    plt.scatter(X[y==cls].iloc[:,0], X[y==cls].iloc[:,1], label=le.inverse_transform([cls])[0])
-plt.xlabel("Sepal Length"); plt.ylabel("Sepal Width"); plt.legend(); plt.show()
-
 # Predict new flower
-print("Predicted:", le.inverse_transform(model.predict([[9, 2, 2.1, 1.5]]))[0])
+new_flower = [[5, 8, 4.5, 5.9]]
+pred = model.predict(new_flower)[0]   # numeric label (0, 1, or 2)
+name = le.inverse_transform([pred])[0]  # species name
+
+# Add +1 para mahimong 1/2/3 imbis 0/1/2
+print(f"Predicted: {pred+1} - {name}")
+
